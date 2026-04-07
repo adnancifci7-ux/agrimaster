@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,11 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       font-family: 'Inter', sans-serif;
@@ -23,12 +28,14 @@
       border-bottom: 1px solid #2a4a20;
       margin-bottom: 16px;
     }
+
     .header h1 {
       font-size: 22px;
       font-weight: 700;
       color: #ffd54f;
       letter-spacing: 1px;
     }
+
     .header .subtitle {
       font-size: 13px;
       color: #66bb6a;
@@ -70,16 +77,40 @@
       padding: 7px 0;
       border-bottom: 1px solid #243d1b;
     }
-    .data-row:last-child { border-bottom: none; }
 
-    .data-label { font-size: 13px; color: #9e9e9e; }
-    .data-value { font-size: 15px; font-weight: 600; }
+    .data-row:last-child {
+      border-bottom: none;
+    }
 
-    .ph   { color: #ce93d8; }
-    .ec   { color: #fff176; }
-    .n    { color: #80deea; }
-    .p    { color: #ffcc80; }
-    .k    { color: #ffe082; }
+    .data-label {
+      font-size: 13px;
+      color: #9e9e9e;
+    }
+
+    .data-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .ph {
+      color: #ce93d8;
+    }
+
+    .ec {
+      color: #fff176;
+    }
+
+    .n {
+      color: #80deea;
+    }
+
+    .p {
+      color: #ffcc80;
+    }
+
+    .k {
+      color: #ffe082;
+    }
 
     .recommend-card {
       background: #2a1400;
@@ -88,6 +119,7 @@
       margin-bottom: 12px;
       border: 1px solid #6d3000;
     }
+
     .recommend-title {
       font-size: 11px;
       font-weight: 600;
@@ -107,15 +139,26 @@
       font-weight: 600;
       color: #ffe0b2;
     }
-    .rec-item:last-child { border-bottom: none; }
+
+    .rec-item:last-child {
+      border-bottom: none;
+    }
+
     .rec-item .dot {
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       background: #ffa726;
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .ok-item { color: #a5d6a7; }
-    .ok-item .dot { background: #66bb6a; }
+
+    .ok-item {
+      color: #a5d6a7;
+    }
+
+    .ok-item .dot {
+      background: #66bb6a;
+    }
 
     .footer {
       text-align: center;
@@ -137,6 +180,7 @@
     }
   </style>
 </head>
+
 <body>
   <div class="header">
     <h1>🌾 AGRIMASTER PRO</h1>
@@ -174,32 +218,57 @@
     <div id="recItems">—</div>
   </div>
 
+  <button onclick="window.print()"
+    style="width:100%; padding:15px; background:#ffd54f; color:#000; border:none; border-radius:8px; font-weight:700; margin-top:10px; cursor:pointer;"
+    class="no-print">
+    📄 PDF OLARAK KAYDET / PAYLAŞ
+  </button>
+
   <div class="footer">
     AgriMaster Pro V80 &nbsp;|&nbsp; agrimaster.io
   </div>
 
+  <style>
+    @media print {
+      .no-print {
+        display: none;
+      }
+
+      body {
+        background: white;
+        color: black;
+      }
+
+      .card,
+      .recommend-card {
+        border: 1px solid #ccc;
+        background: #fff;
+      }
+    }
+  </style>
+
   <script>
     const params = new URLSearchParams(window.location.search);
 
-    const ph   = params.get('ph')  || '--';
-    const ec   = params.get('ec')  || '--';
-    const n    = params.get('n')   || '--';
-    const p    = params.get('p')   || '--';
-    const k    = params.get('k')   || '--';
-    const urun = params.get('urun')|| 'Belirsiz';
-    const r1   = params.get('r1')  || 'Bilgi Yok';
-    const r2   = params.get('r2')  || 'Bilgi Yok';
+    const ph = params.get('ph') || '--';
+    const ec = params.get('ec') || '--';
+    const n = params.get('n') || '--';
+    const p = params.get('p') || '--';
+    const k = params.get('k') || '--';
+    const urun = params.get('urun') || 'Belirsiz';
+    const r1 = params.get('r1') || 'Bilgi Yok';
+    const r2 = params.get('r2') || 'Bilgi Yok';
 
     document.getElementById('phVal').textContent = ph;
     document.getElementById('ecVal').textContent = ec + ' µS/cm';
-    document.getElementById('nVal').textContent  = n  + ' mg/kg';
-    document.getElementById('pVal').textContent  = p  + ' mg/kg';
-    document.getElementById('kVal').textContent  = k  + ' mg/kg';
+    document.getElementById('nVal').textContent = n + ' mg/kg';
+    document.getElementById('pVal').textContent = p + ' mg/kg';
+    document.getElementById('kVal').textContent = k + ' mg/kg';
     document.getElementById('urunTag').textContent = '🌱 ' + urun;
 
     const now = new Date();
     document.getElementById('tarihBadge').textContent =
-      now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+      now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
 
     const recDiv = document.getElementById('recItems');
     recDiv.innerHTML = '';
@@ -212,4 +281,5 @@
     });
   </script>
 </body>
+
 </html>
