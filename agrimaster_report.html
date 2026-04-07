@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgriMaster Pro - Toprak Analiz Raporu</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0d1a08;
+      color: #e8f5e9;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px 0 12px;
+      border-bottom: 1px solid #2a4a20;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffd54f;
+      letter-spacing: 1px;
+    }
+    .header .subtitle {
+      font-size: 13px;
+      color: #66bb6a;
+      margin-top: 4px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #1b3a12;
+      color: #a5d6a7;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 1px solid #2e6b20;
+      margin-top: 8px;
+    }
+
+    .card {
+      background: #1a2e14;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid #2a4a20;
+    }
+
+    .card-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #66bb6a;
+      margin-bottom: 10px;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #243d1b;
+    }
+    .data-row:last-child { border-bottom: none; }
+
+    .data-label { font-size: 13px; color: #9e9e9e; }
+    .data-value { font-size: 15px; font-weight: 600; }
+
+    .ph   { color: #ce93d8; }
+    .ec   { color: #fff176; }
+    .n    { color: #80deea; }
+    .p    { color: #ffcc80; }
+    .k    { color: #ffe082; }
+
+    .recommend-card {
+      background: #2a1400;
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid #6d3000;
+    }
+    .recommend-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ffa726;
+      margin-bottom: 10px;
+    }
+
+    .rec-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #3e1f00;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffe0b2;
+    }
+    .rec-item:last-child { border-bottom: none; }
+    .rec-item .dot {
+      width: 8px; height: 8px;
+      background: #ffa726;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .ok-item { color: #a5d6a7; }
+    .ok-item .dot { background: #66bb6a; }
+
+    .footer {
+      text-align: center;
+      color: #424242;
+      font-size: 11px;
+      padding: 16px 0 8px;
+    }
+
+    .crop-tag {
+      display: inline-block;
+      background: #1b4a20;
+      color: #69f0ae;
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-top: 8px;
+      border: 1px solid #2e7d32;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🌾 AGRIMASTER PRO</h1>
+    <div class="subtitle">Toprak Analiz Raporu</div>
+    <div class="crop-tag" id="urunTag">—</div>
+    <div class="badge" id="tarihBadge">—</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📊 Ölçülen Değerler</div>
+    <div class="data-row">
+      <span class="data-label">pH</span>
+      <span class="data-value ph" id="phVal">—</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">EC (Tuzluluk)</span>
+      <span class="data-value ec" id="ecVal">—</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Azot (N)</span>
+      <span class="data-value n" id="nVal">—</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Fosfor (P)</span>
+      <span class="data-value p" id="pVal">—</span>
+    </div>
+    <div class="data-row">
+      <span class="data-label">Potasyum (K)</span>
+      <span class="data-value k" id="kVal">—</span>
+    </div>
+  </div>
+
+  <div class="recommend-card">
+    <div class="recommend-title">⚠️ Gübre Tavsiyesi</div>
+    <div id="recItems">—</div>
+  </div>
+
+  <div class="footer">
+    AgriMaster Pro V80 &nbsp;|&nbsp; agrimaster.io
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const ph   = params.get('ph')  || '--';
+    const ec   = params.get('ec')  || '--';
+    const n    = params.get('n')   || '--';
+    const p    = params.get('p')   || '--';
+    const k    = params.get('k')   || '--';
+    const urun = params.get('urun')|| 'Belirsiz';
+    const r1   = params.get('r1')  || 'Bilgi Yok';
+    const r2   = params.get('r2')  || 'Bilgi Yok';
+
+    document.getElementById('phVal').textContent = ph;
+    document.getElementById('ecVal').textContent = ec + ' µS/cm';
+    document.getElementById('nVal').textContent  = n  + ' mg/kg';
+    document.getElementById('pVal').textContent  = p  + ' mg/kg';
+    document.getElementById('kVal').textContent  = k  + ' mg/kg';
+    document.getElementById('urunTag').textContent = '🌱 ' + urun;
+
+    const now = new Date();
+    document.getElementById('tarihBadge').textContent =
+      now.toLocaleDateString('tr-TR') + ' ' + now.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+
+    const recDiv = document.getElementById('recItems');
+    recDiv.innerHTML = '';
+    [r1, r2].forEach(rec => {
+      const isOk = rec.toLowerCase().includes('yeterli');
+      const div = document.createElement('div');
+      div.className = 'rec-item' + (isOk ? ' ok-item' : '');
+      div.innerHTML = '<span class="dot"></span><span>' + rec + '</span>';
+      recDiv.appendChild(div);
+    });
+  </script>
+</body>
+</html>
