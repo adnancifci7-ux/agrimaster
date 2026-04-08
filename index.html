@@ -186,7 +186,10 @@
     <h1>🌾 AGRIMASTER PRO</h1>
     <div class="subtitle">Toprak Analiz Raporu</div>
     <div class="crop-tag" id="urunTag">—</div>
-    <div class="badge" id="tarihBadge">—</div>
+    <div style="display:flex; justify-content:center; gap:8px; margin-top:6px;">
+      <div class="badge" id="tarihBadge">—</div>
+      <div class="badge" style="background:#1a3a10; color:#69f0ae; border-color:#2e7d32" id="tarlaBadge">TARLA —</div>
+    </div>
   </div>
 
   <div class="card">
@@ -218,36 +221,91 @@
     <div id="recItems">—</div>
   </div>
 
+  <div class="card" style="background:#112108; border-color:#2e7d32;">
+    <div class="card-title" style="color:#81c784;">📍 ARAZİ VE KONUM BİLGİSİ</div>
+
+    <label style="font-size:12px; color:#9e9e9e; margin-bottom:4px; display:block;">Ada / Parsel veya Notlar:</label>
+    <input type="text" placeholder="Örn: Kuzey Tarlası 145/2"
+      style="width:100%; padding:10px; border-radius:6px; border:1px solid #2a4a20; background:#0d1a08; color:#fff; font-family:inherit; margin-bottom:12px;"
+      class="print-input">
+
+    <button onclick="getGPS()" id="gpsBtn"
+      style="width:100%; padding:10px; background:#2e7d32; color:#fff; border:none; border-radius:6px; cursor:pointer; font-weight:600;"
+      class="no-print">
+      📡 Telefondan GPS Konumunu Çek
+    </button>
+    <div id="gpsResult" style="margin-top:10px; font-size:14px; font-weight:600; color:#ffd54f; text-align:center;">
+    </div>
+  </div>
+
   <button onclick="window.print()"
-    style="width:100%; padding:15px; background:#ffd54f; color:#000; border:none; border-radius:8px; font-weight:700; margin-top:10px; cursor:pointer;"
+    style="width:100%; padding:15px; background:#ffd54f; color:#000; border:none; border-radius:8px; font-weight:700; cursor:pointer; margin-bottom: 20px;"
     class="no-print">
     📄 PDF OLARAK KAYDET / PAYLAŞ
   </button>
 
-  <div class="footer">
-    AgriMaster Pro V80 &nbsp;|&nbsp; agrimaster.io
-  </div>
-
   <style>
     @media print {
       .no-print {
-        display: none;
+        display: none !important;
       }
 
       body {
-        background: white;
-        color: black;
+        background: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact;
+        padding: 0;
       }
 
       .card,
       .recommend-card {
-        border: 1px solid #ccc;
-        background: #fff;
+        border: 1px solid #ccc !important;
+        background: #fff !important;
+        color: black;
+        box-shadow: none;
+        break-inside: avoid;
+      }
+
+      .header h1 {
+        color: #000 !important;
+      }
+
+      .data-value,
+      .card-title,
+      .recommend-title,
+      #gpsResult {
+        color: #000 !important;
+        text-shadow: none !important;
+      }
+
+      .print-input {
+        background: transparent !important;
+        color: #000 !important;
+        border: 1px dashed #ccc !important;
+      }
+
+      .print-input::placeholder {
+        color: transparent;
       }
     }
   </style>
 
   <script>
+    function getGPS() {
+      const btn = document.getElementById('gpsBtn');
+      btn.textContent = "Konum Aranıyor... Lütfen izin verin.";
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            document.getElementById('gpsResult').innerHTML = `Enlem: ${pos.coords.latitude.toFixed(6)} <br> Boylam: ${pos.coords.longitude.toFixed(6)}`;
+            btn.style.display = 'none';
+          },
+          (err) => { btn.textContent = "Konum Alınamadı! (Telefondan İzin Verin)"; }
+        );
+      } else {
+        btn.textContent = "Konum Desteklenmiyor";
+      }
+    }
     const params = new URLSearchParams(window.location.search);
 
     const ph = params.get('ph') || '--';
@@ -256,6 +314,7 @@
     const p = params.get('p') || '--';
     const k = params.get('k') || '--';
     const urun = params.get('urun') || 'Belirsiz';
+    const tarla = params.get('tarla') || '?';
     const r1 = params.get('r1') || 'Bilgi Yok';
     const r2 = params.get('r2') || 'Bilgi Yok';
 
@@ -265,6 +324,7 @@
     document.getElementById('pVal').textContent = p + ' mg/kg';
     document.getElementById('kVal').textContent = k + ' mg/kg';
     document.getElementById('urunTag').textContent = '🌱 ' + urun;
+    document.getElementById('tarlaBadge').textContent = 'TARLA NO: ' + tarla;
 
     const now = new Date();
     document.getElementById('tarihBadge').textContent =
